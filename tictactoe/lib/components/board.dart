@@ -2,17 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
 
-class Board extends StatelessWidget {
+class Board extends StatefulWidget {
   final BuildContext context;
   final GameState state;
 
   const Board({super.key, required this.context, required this.state});
 
   @override
+  State<Board> createState() => _BoardState();
+}
+
+class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(Board oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.state.winner != oldWidget.state.winner && widget.state.winner != '') {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (state.winner != '')
+        if (widget.state.winner != '')
           Container(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.width * 0.8,
@@ -30,7 +63,7 @@ class Board extends StatelessWidget {
             children: List.generate(9, (index) {
               return GestureDetector(
                 onTap: () {
-                  if (state.board[index] == '') {
+                  if (widget.state.board[index] == '') {
                     context.read<GameBloc>().add(GameMoveRequested(index));
                   }
                 },
@@ -66,9 +99,9 @@ class Board extends StatelessWidget {
                                   ),
                   ),
                   child: Center(
-                    child: (state.board[index] == 'X')
+                    child: (widget.state.board[index] == 'X')
                         ? const Icon(Icons.square_rounded, color: Colors.green, size: 50)
-                        : (state.board[index] == 'O')
+                        : (widget.state.board[index] == 'O')
                             ? const Icon(Icons.circle, color: Colors.blue, size: 50)
                             : null,
                   ),
@@ -77,10 +110,10 @@ class Board extends StatelessWidget {
             }),
           ),
         ),
-        if (state.winner != '' && state.winner != 'Draw')
+        if (widget.state.winner != '' && widget.state.winner != 'Draw')
           Positioned.fill(
             child: CustomPaint(
-              painter: LinePainter(state.board),
+              painter: LinePainter(widget.state.board, _animation.value),
             ),
           ),
       ],
@@ -89,7 +122,7 @@ class Board extends StatelessWidget {
 }
 
 class LinePainter extends CustomPainter {
-  List<int> find_sequence(List<String> board) {
+  List<int> findSequence(List<String> board) {
     for (var i = 0; i < 3; i++) {
       if (board[i * 3] != '' && board[i * 3] == board[i * 3 + 1] && board[i * 3] == board[i * 3 + 2]) {
         return [i * 3, i * 3 + 1, i * 3 + 2];
@@ -111,16 +144,17 @@ class LinePainter extends CustomPainter {
   }
 
   final List<String> board;
+  final double progress;
 
-  LinePainter(this.board);
+  LinePainter(this.board, this.progress);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final sequence = find_sequence(board);
+    final sequence = findSequence(board);
 
     final paint = Paint()
       ..color = Colors.red
-      ..strokeWidth = 10
+      ..strokeWidth = 7.5
       ..strokeCap = StrokeCap.round;
 
     final offset = size.width / 6;
@@ -135,7 +169,7 @@ class LinePainter extends CustomPainter {
       x1 = offset + adjust;
       y1 = offset + adjust;
     } else if (sequence[0] == 1) {
-      x1 = size.width / 3;
+      x1 = size.width / 3 + offset;
       y1 = offset;
     } else if (sequence[0] == 2) {
       x1 = size.width * 2 / 3 + offset - adjust;
@@ -153,23 +187,26 @@ class LinePainter extends CustomPainter {
       y2 = offset + adjust;
     } else if (sequence[2] == 5) {
       x2 = size.width * 2 / 3 + offset;
-      y2 = size.height / 3 + offset;
+      y2 = size.height / 3;
     } else if (sequence[2] == 6) {
       x2 = offset + adjust;
       y2 = size.height * 2 / 3 + offset - adjust;
     } else if (sequence[2] == 7) {
-      x2 = size.width / 3 + offset - adjust;
+      x2 = size.width / 3 + offset;
       y2 = size.height * 2 / 3 + offset - adjust;
     } else if (sequence[2] == 8) {
       x2 = size.width * 2 / 3 + offset - adjust;
       y2 = size.height * 2 / 3 + offset - adjust;
     }
 
-    canvas.drawLine(Offset(x1, y1), Offset(x2, y2), paint);
+    final endX = x1 + (x2 - x1) * progress;
+    final endY = y1 + (y2 - y1) * progress;
+
+    canvas.drawLine(Offset(x1, y1), Offset(endX, endY), paint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(LinePainter oldDelegate) {
+    return oldDelegate.progress != progress;
   }
 }

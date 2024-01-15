@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
 import 'package:tictactoe/bloc_observer.dart';
-import 'package:tictactoe/game.dart';
+import 'package:tictactoe/loading_screen.dart';
 
 void main() {
   Bloc.observer = const AppBlocObserver();
@@ -16,9 +16,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => GameBloc(),
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Game(),
+        home: LoadingScreen(),
       ),
     );
   }
