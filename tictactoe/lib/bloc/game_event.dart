@@ -1,14 +1,21 @@
 part of 'game_bloc.dart';
 
 @immutable
-abstract class GameEvent extends Equatable{
+abstract class GameEvent extends Equatable {
   const GameEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class GameStarted extends GameEvent {}
+class GameStarted extends GameEvent {
+  final String mode;
+
+  const GameStarted(this.mode);
+
+  @override
+  List<Object?> get props => [mode];
+}
 
 class GameMoveRequested extends GameEvent {
   final int index;

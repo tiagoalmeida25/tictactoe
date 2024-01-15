@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
@@ -5,8 +7,9 @@ import 'package:tictactoe/bloc/game_bloc.dart';
 class Board extends StatefulWidget {
   final BuildContext context;
   final GameState state;
+  final bool playerTurn;
 
-  const Board({super.key, required this.context, required this.state});
+  const Board({super.key, required this.context, required this.state, required this.playerTurn});
 
   @override
   State<Board> createState() => _BoardState();
@@ -18,7 +21,7 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+    _controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -63,8 +66,21 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
             children: List.generate(9, (index) {
               return GestureDetector(
                 onTap: () {
-                  if (widget.state.board[index] == '') {
+                  if (widget.state.board[index] == '' && widget.state.mode == '2P') {
                     context.read<GameBloc>().add(GameMoveRequested(index));
+                  } else if (widget.state.board[index] == '' &&
+                      widget.state.mode == '1P' &&
+                      widget.playerTurn) {
+                    context.read<GameBloc>().add(GameMoveRequested(index));
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      if (widget.state.winner == '') {
+                        int move = Random.secure().nextInt(9);
+                        while (widget.state.board[move] != '') {
+                          move = Random.secure().nextInt(9);
+                        }
+                        context.read<GameBloc>().add(GameMoveRequested(move));
+                      }
+                    });
                   }
                 },
                 child: Container(
@@ -186,8 +202,8 @@ class LinePainter extends CustomPainter {
       x2 = size.width * 2 / 3 + offset - adjust;
       y2 = offset + adjust;
     } else if (sequence[2] == 5) {
-      x2 = size.width * 2 / 3 + offset;
-      y2 = size.height / 3;
+      x2 = size.width * 2 / 3 + offset - adjust;
+      y2 = size.height / 3 + offset;
     } else if (sequence[2] == 6) {
       x2 = offset + adjust;
       y2 = size.height * 2 / 3 + offset - adjust;

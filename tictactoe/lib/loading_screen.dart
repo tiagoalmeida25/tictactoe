@@ -25,7 +25,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               child: Column(
                 children: [
                   Text(
-                    'Tic Tac Toe',
+                    'TicTacToe',
                     style: GoogleFonts.pressStart2p(fontSize: 30, color: Colors.white),
                   ),
                   const SizedBox(height: 36),
@@ -35,20 +35,40 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            context.read<GameBloc>().add(GameStarted());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
-                          },
-                          child: Text(
-                            '2 Players',
-                            style: GoogleFonts.pressStart2p(
-                                color: Colors.white,
-                                fontSize: 20,
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline),
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                context.read<GameBloc>().add(const GameStarted('1P'));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
+                              },
+                              child: Text(
+                                '1 Player',
+                                style: GoogleFonts.pressStart2p(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<GameBloc>().add(const GameStarted('2P'));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
+                              },
+                              child: Text(
+                                '2 Players',
+                                style: GoogleFonts.pressStart2p(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -40,12 +40,26 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       }
     }
 
+    int count = 0;
+    for (var i = 0; i < 9; i++) {
+      if (board[i] != '') {
+        count++;
+      }
+    }
+
+    if (count == 9) {
+      return 'Draw';
+    }
+
     return '';
   }
 
-  GameBloc() : super(const GameState._(board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '')) {
+  GameBloc()
+      : super(
+            const GameState._(board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: '')) {
     on<GameStarted>((event, emit) {
-      emit(const GameState._(board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: ''));
+      emit(GameState._(
+          board: const ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: event.mode));
     });
 
     on<GameMoveRequested>((event, emit) {
@@ -55,26 +69,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       final nextTurn = state.turn == 'X' ? 'O' : 'X';
       String winner = _calculateWinner(board);
 
-      int count = 0;
-      for (var i = 0; i < 9; i++) {
-        if (board[i] != '') {
-          count++;
-        }
-      }
-
-      if (count == 9 && winner == '') {
-        winner = 'Draw';
-      }
-
-      emit(GameState._(board: board, turn: nextTurn, winner: winner));
+      emit(GameState._(board: board, turn: nextTurn, winner: winner, mode: state.mode));
     });
 
     on<GameOver>((event, emit) {
-      emit(GameState._(board: state.board, turn: state.turn, winner: event.winner));
+      emit(GameState._(board: state.board, turn: state.turn, winner: event.winner, mode: state.mode));
     });
 
     on<GameResetRequested>((event, emit) {
-      emit(const GameState._(board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: ''));
+      emit(GameState._(
+          board: const ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: state.mode));
     });
   }
 }
