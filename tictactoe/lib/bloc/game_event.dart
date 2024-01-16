@@ -10,8 +10,9 @@ abstract class GameEvent extends Equatable {
 
 class GameStarted extends GameEvent {
   final String mode;
+  final String? roomID;
 
-  const GameStarted(this.mode);
+  const GameStarted(this.mode, [this.roomID]);
 
   @override
   List<Object?> get props => [mode];
@@ -21,6 +22,15 @@ class GameMoveRequested extends GameEvent {
   final int index;
 
   const GameMoveRequested(this.index);
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class GameMoveFriend extends GameEvent {
+  final int index;
+
+  const GameMoveFriend(this.index);
 
   @override
   List<Object?> get props => [index];
@@ -36,3 +46,12 @@ class GameOver extends GameEvent {
 }
 
 class GameResetRequested extends GameEvent {}
+
+class GameRefreshed extends GameEvent {
+  final String roomID;
+
+  const GameRefreshed(this.roomID);
+
+  @override
+  List<Object?> get props => [roomID];
+}

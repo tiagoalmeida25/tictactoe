@@ -92,6 +92,11 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
                         context.read<GameBloc>().add(GameMoveRequested(index));
                       }
                       break;
+                    case 'Friend':
+                      if (widget.playerTurn) {
+                        context.read<GameBloc>().add(GameMoveFriend(index));
+                      }
+                      break;
                   }
                 },
                 child: Container(

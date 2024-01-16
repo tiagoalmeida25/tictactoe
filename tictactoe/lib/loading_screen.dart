@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
+import 'package:tictactoe/friend_game.dart';
 import 'package:tictactoe/game.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -84,6 +85,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
                               },
                               child: Text(
                                 'ChatGPT',
+                                style: GoogleFonts.pressStart2p(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => const FriendGame()));
+                              },
+                              child: Text(
+                                'Friend',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
