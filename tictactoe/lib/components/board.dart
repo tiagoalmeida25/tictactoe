@@ -66,21 +66,32 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
             children: List.generate(9, (index) {
               return GestureDetector(
                 onTap: () {
-                  if (widget.state.board[index] == '' && widget.state.mode == '2P') {
-                    context.read<GameBloc>().add(GameMoveRequested(index));
-                  } else if (widget.state.board[index] == '' &&
-                      widget.state.mode == '1P' &&
-                      widget.playerTurn) {
-                    context.read<GameBloc>().add(GameMoveRequested(index));
-                    Future.delayed(const Duration(milliseconds: 500), () {
-                      if (widget.state.winner == '') {
-                        int move = Random.secure().nextInt(9);
-                        while (widget.state.board[move] != '') {
-                          move = Random.secure().nextInt(9);
-                        }
-                        context.read<GameBloc>().add(GameMoveRequested(move));
+                  if (widget.state.board[index] != '') return;
+
+                  switch (widget.state.mode) {
+                    case '2P':
+                      context.read<GameBloc>().add(GameMoveRequested(index));
+
+                      break;
+                    case '1P':
+                      if (widget.playerTurn) {
+                        context.read<GameBloc>().add(GameMoveRequested(index));
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (widget.state.winner == '') {
+                            int move = Random.secure().nextInt(9);
+                            while (widget.state.board[move] != '') {
+                              move = Random.secure().nextInt(9);
+                            }
+                            context.read<GameBloc>().add(GameMoveRequested(move));
+                          }
+                        });
                       }
-                    });
+                      break;
+                    case 'GPT':
+                      if (widget.playerTurn) {
+                        context.read<GameBloc>().add(GameMoveRequested(index));
+                      }
+                      break;
                   }
                 },
                 child: Container(

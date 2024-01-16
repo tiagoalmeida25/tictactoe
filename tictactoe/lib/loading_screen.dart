@@ -29,8 +29,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     style: GoogleFonts.pressStart2p(fontSize: 30, color: Colors.white),
                   ),
                   const SizedBox(height: 36),
-
-
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -38,13 +36,22 @@ class _LoadingScreenState extends State<LoadingScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              'Play vs:',
+                              style: GoogleFonts.pressStart2p(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
                             TextButton(
                               onPressed: () {
                                 context.read<GameBloc>().add(const GameStarted('1P'));
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => const Game()));
                               },
                               child: Text(
-                                '1 Player',
+                                'Computer',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -56,10 +63,27 @@ class _LoadingScreenState extends State<LoadingScreen> {
                             TextButton(
                               onPressed: () {
                                 context.read<GameBloc>().add(const GameStarted('2P'));
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => const Game()));
                               },
                               child: Text(
-                                '2 Players',
+                                'Human',
+                                style: GoogleFonts.pressStart2p(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<GameBloc>().add(const GameStarted('GPT'));
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => const Game()));
+                              },
+                              child: Text(
+                                'ChatGPT',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
