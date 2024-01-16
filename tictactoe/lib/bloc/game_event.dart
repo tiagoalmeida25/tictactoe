@@ -47,6 +47,8 @@ class GameOver extends GameEvent {
 
 class GameResetRequested extends GameEvent {}
 
+class GameResetFriend extends GameEvent {}
+
 class GameRefreshed extends GameEvent {
   final String roomID;
 
@@ -55,3 +57,5 @@ class GameRefreshed extends GameEvent {
   @override
   List<Object?> get props => [roomID];
 }
+
+class ExitGame extends GameEvent {}

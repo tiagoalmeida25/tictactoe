@@ -135,6 +135,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           board: const ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: state.mode));
     });
 
+    on<GameResetFriend>((event, emit) {
+      FirebaseFirestore.instance.collection('rooms').doc(state.roomID).update({
+        'board': const ['', '', '', '', '', '', '', '', ''],
+      });
+
+      emit(GameState._(
+          roomID: state.roomID,
+          player: state.player,
+          board: const ['', '', '', '', '', '', '', '', ''],
+          turn: 'X',
+          winner: '',
+          mode: state.mode));
+    });
+
     on<GameRefreshed>((event, emit) async {
       final value = await FirebaseFirestore.instance.collection('rooms').doc(event.roomID).get();
       if (value.exists) {
@@ -150,6 +164,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             winner: winner,
             mode: state.mode));
       }
+    });
+
+    on<ExitGame>((event, emit) async {
+      emit(GameState._(
+          board: const ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: state.mode));
     });
   }
 }

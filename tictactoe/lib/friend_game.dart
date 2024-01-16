@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
-import 'package:tictactoe/game.dart';
+import 'package:tictactoe/multiplayer_game.dart';
 
 class FriendGame extends StatefulWidget {
   const FriendGame({super.key});
@@ -60,7 +60,7 @@ class _FriendGameState extends State<FriendGame> {
         if (value.data()!['players'] == '1') {
           FirebaseFirestore.instance.collection('rooms').doc(roomID).update({'players': '2'});
           context.read<GameBloc>().add(GameStarted('Friend', roomID));
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MultiplayerGame()));
         } else {
           Fluttertoast.showToast(msg: 'Room is full.');
         }
@@ -68,7 +68,6 @@ class _FriendGameState extends State<FriendGame> {
         Fluttertoast.showToast(msg: 'Room does not exist.');
       }
     });
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const Game()));
   }
 
   @override
@@ -109,8 +108,8 @@ class _FriendGameState extends State<FriendGame> {
                             TextButton(
                               onPressed: () {
                                 context.read<GameBloc>().add(const GameStarted('Friend', null));
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => const Game()));
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => const MultiplayerGame()));
                               },
                               child: Text(
                                 'Create Room',
