@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tictactoe/ai_game.dart';
 import 'package:tictactoe/bloc/game_bloc.dart';
 import 'package:tictactoe/friend_game.dart';
 import 'package:tictactoe/game.dart';
@@ -47,12 +48,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
                             const SizedBox(height: 16),
                             TextButton(
                               onPressed: () {
-                                context.read<GameBloc>().add(const GameStarted('1P'));
+                                context.read<GameBloc>().add(const GameStarted('2P'));
                                 Navigator.push(
                                     context, MaterialPageRoute(builder: (context) => const Game()));
                               },
                               child: Text(
-                                'Computer',
+                                '2 Players',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -63,12 +64,28 @@ class _LoadingScreenState extends State<LoadingScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                context.read<GameBloc>().add(const GameStarted('2P'));
+                                context.read<GameBloc>().add(const GameStarted('1P'));
                                 Navigator.push(
                                     context, MaterialPageRoute(builder: (context) => const Game()));
                               },
                               child: Text(
-                                'Human',
+                                'Random AI',
+                                style: GoogleFonts.pressStart2p(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<GameBloc>().add(const GameStarted('AI'));
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => const AIGame()));
+                              },
+                              child: Text(
+                                'Smart AI',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -99,7 +116,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                                     context, MaterialPageRoute(builder: (context) => const FriendGame()));
                               },
                               child: Text(
-                                'Friend',
+                                'Room',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,

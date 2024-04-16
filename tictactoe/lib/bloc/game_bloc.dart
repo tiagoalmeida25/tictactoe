@@ -1,14 +1,69 @@
 import 'dart:math';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
+  int _minimax(List<String> board, bool isMaximizing, String player, int depth) {
+    String opponent = player == 'X' ? 'O' : 'X';
+    String result = _calculateWinner(board);
+
+    if (result.isNotEmpty) {
+      if (result == player) {
+        return 10 - depth;
+      } else if (result == opponent) {
+        return -10 + depth;
+      } else if (result == 'Draw') {
+        return 0;
+      }
+    }
+
+    if (isMaximizing) {
+      int bestScore = -1000;
+      for (int i = 0; i < board.length; i++) {
+        if (board[i] == '') {
+          board[i] = player;
+          int score = _minimax(board, false, player, depth + 1);
+          board[i] = '';
+          bestScore = max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      int bestScore = 1000;
+      for (int i = 0; i < board.length; i++) {
+        if (board[i] == '') {
+          board[i] = opponent;
+          int score = _minimax(board, true, player, depth + 1);
+          board[i] = '';
+          bestScore = min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
+  }
+
+  int _findBestMove(List<String> board, String player) {
+    int bestScore = -1000;
+    int bestMove = -1;
+    for (int i = 0; i < board.length; i++) {
+      if (board[i] == '') {
+        board[i] = player;
+        int score = _minimax(board, false, player, 0);
+        board[i] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+    return bestMove;
+  }
+
   String _calculateWinner(List<String> board) {
     for (var i = 0; i < 3; i++) {
       if (board[i * 3] != '' && board[i * 3] == board[i * 3 + 1] && board[i * 3] == board[i * 3 + 2]) {
@@ -169,6 +224,22 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<ExitGame>((event, emit) async {
       emit(GameState._(
           board: const ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: '', mode: state.mode));
+    });
+
+    on<CalculateMinimax>((event, emit) {
+      final board = List<String>.from(state.board);
+      final player = state.turn;
+      final bestMove = _findBestMove(board, player);
+
+      if (bestMove != -1) {
+        // Check if a valid move was found
+        board[bestMove] = player;
+      }
+
+      final nextTurn = player == 'X' ? 'O' : 'X';
+      final winner = _calculateWinner(board);
+
+      emit(GameState._(board: board, turn: nextTurn, winner: winner, mode: state.mode));
     });
   }
 }

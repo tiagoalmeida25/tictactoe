@@ -5,8 +5,10 @@ import 'package:tictactoe/bloc/game_bloc.dart';
 import 'package:tictactoe/bloc_observer.dart';
 import 'package:tictactoe/firebase_options.dart';
 import 'package:tictactoe/loading_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
+  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   await Firebase.initializeApp(

@@ -69,6 +69,18 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
                   if (widget.state.board[index] != '') return;
 
                   switch (widget.state.mode) {
+                    case 'AI':
+                      if (widget.playerTurn) {
+                        context.read<GameBloc>().add(GameMoveRequested(index));
+                        
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (widget.state.winner == '') {
+                            context.read<GameBloc>().add(CalculateMinimax(widget.state.board, 'O'));
+                          }
+                        });
+                      }
+                      break;
+
                     case '2P':
                       context.read<GameBloc>().add(GameMoveRequested(index));
 

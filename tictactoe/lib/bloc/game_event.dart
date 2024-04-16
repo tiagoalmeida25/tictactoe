@@ -1,6 +1,5 @@
 part of 'game_bloc.dart';
 
-@immutable
 abstract class GameEvent extends Equatable {
   const GameEvent();
 
@@ -59,3 +58,13 @@ class GameRefreshed extends GameEvent {
 }
 
 class ExitGame extends GameEvent {}
+
+class CalculateMinimax extends GameEvent {
+  final List<String> board;
+  final String turn;
+
+  const CalculateMinimax(this.board, this.turn);
+
+  @override
+  List<Object?> get props => [board, turn];
+}
