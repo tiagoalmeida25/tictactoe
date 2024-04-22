@@ -53,23 +53,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                                     context, MaterialPageRoute(builder: (context) => const Game()));
                               },
                               child: Text(
-                                '2 Players',
-                                style: GoogleFonts.pressStart2p(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    letterSpacing: 2,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                context.read<GameBloc>().add(const GameStarted('1P'));
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => const Game()));
-                              },
-                              child: Text(
-                                'Random AI',
+                                'Side by Side',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -85,7 +69,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                                     context, MaterialPageRoute(builder: (context) => const AIGame()));
                               },
                               child: Text(
-                                'Smart AI',
+                                'Super Computer',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -116,7 +100,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                                     context, MaterialPageRoute(builder: (context) => const FriendGame()));
                               },
                               child: Text(
-                                'Room',
+                                'Private Dual',
                                 style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 20,
